@@ -2,22 +2,22 @@
   "name": "react-native-bloom-video",
   "title": "React Native Bloom Video",
   "version": "1.0.0",
-  "description": "TODO",
+  "description": "Bloom Video 视频sdk react-native 版本",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-bloom-video.git",
-    "baseUrl": "https://github.com/github_account/react-native-bloom-video"
+    "url": "git+https://github.com/bloomadinc/react-native-bloom-video",
+    "baseUrl": "https://github.com/bloomadinc/react-native-bloom-video"
   },
   "keywords": [
     "react-native"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "yourname@email.com"
+    "name": "maofaming",
+    "email": "maofaming@email.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",

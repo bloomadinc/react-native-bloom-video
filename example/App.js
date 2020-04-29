@@ -10,20 +10,9 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Dimensions} from 'react-native';
-import BloomVideo, {VideoStreaming} from 'react-native-bloom-video';
+import {VideoStreaming} from 'react-native-bloom-video';
 
 const {width, height} = Dimensions.get('window');
-
-console.log(width, height);
-
-// BloomVideo.init('ba0063bfbc1a5ad878')
-//   .then((res) => {
-//     // BloomAd.showSplash();
-//     console.log('init', res);
-//   })
-//   .catch((error) => {
-//     // console.log(error);
-//   });
 
 export default class App extends Component<{}> {
   state = {

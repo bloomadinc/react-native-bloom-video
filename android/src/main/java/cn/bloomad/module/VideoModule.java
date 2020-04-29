@@ -22,11 +22,10 @@ import java.util.Map;
 
 import cn.bloomad.BuildConfig;
 
-
 public class VideoModule extends EventModule {
     private final int NEWS_FRAGMENT_ID = 8888;
     private DrawVideoFragment mDrawVideoFragment;
-    //    private  FrameLayout newsContainer;
+    // private FrameLayout newsContainer;
     private InitModule initModule;
 
     public VideoModule(final ReactApplicationContext reactContext, final Activity activity, String name) {

@@ -37,11 +37,11 @@ function withComponent(WrappedComponent, selectData = {}) {
 
     componentWillUnmount = () => {};
     render() {
-      console.log("state", this.state);
+      console.log("state", this.state, this.props);
       return (
         <View
-          {...this.props}
           style={{
+            ...this.props.style,
             alignItems: "center",
           }}
         >
