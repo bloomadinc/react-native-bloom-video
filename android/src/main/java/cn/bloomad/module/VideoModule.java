@@ -23,7 +23,7 @@ import java.util.Map;
 import cn.bloomad.BuildConfig;
 
 public class VideoModule extends EventModule {
-    private final int NEWS_FRAGMENT_ID = 8888;
+    private final int NEWS_FRAGMENT_ID = 88888;
     private DrawVideoFragment mDrawVideoFragment;
     // private FrameLayout newsContainer;
     private InitModule initModule;
@@ -40,7 +40,7 @@ public class VideoModule extends EventModule {
         final ViewGroup viewGroup = (ViewGroup) params.get("viewGroup");
         final String appId = (String) params.get("appId");
         AppCompatActivity activity = (AppCompatActivity) mActivity;
-        FragmentManager fm = activity.getSupportFragmentManager();
+        final FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(NEWS_FRAGMENT_ID);
         Log.d(TAG, "VideoModule threadAction:" + (null == fragment) + ":" + String.valueOf(viewGroup.getId()));
         if (null == fragment) {
@@ -55,50 +55,56 @@ public class VideoModule extends EventModule {
             viewGroup.addView(newsContainer, layoutParams);
             fragment = DrawVideoFragment.newInstance();
 
-            fm.beginTransaction().add(NEWS_FRAGMENT_ID, fragment).commitAllowingStateLoss();
-
-            mDrawVideoFragment = (DrawVideoFragment) fragment;
-            mDrawVideoFragment.setVideoListener(new VideoSdk.VideoListener() {
+            final Fragment finalFragment = fragment;
+            viewGroup.post(new Runnable() {
                 @Override
-                public void onVideoStart(String id) { // 播放开始
-                    Log.d(TAG, "VideoModule onVideoStart");
-                    sendStatus("onVideoStart", id);
-                }
+                public void run() {
+                    fm.beginTransaction().add(NEWS_FRAGMENT_ID, finalFragment).commitAllowingStateLoss();
 
-                @Override
-                public void onVideoPause(String id) { // 播放暂停
-                    Log.d(TAG, "VideoModule onVideoPause");
-                    sendStatus("onVideoPause", id);
-                }
+                    mDrawVideoFragment = (DrawVideoFragment) finalFragment;
+                    mDrawVideoFragment.setVideoListener(new VideoSdk.VideoListener() {
+                        @Override
+                        public void onVideoStart(String id) { // 播放开始
+                            Log.d(TAG, "VideoModule onVideoStart");
+                            sendStatus("onVideoStart", id);
+                        }
 
-                @Override
-                public void onVideoResume(String id) { // 播放恢复
-                    Log.d(TAG, "VideoModule onVideoResume");
-                    sendStatus("onVideoResume", id);
-                }
+                        @Override
+                        public void onVideoPause(String id) { // 播放暂停
+                            Log.d(TAG, "VideoModule onVideoPause");
+                            sendStatus("onVideoPause", id);
+                        }
 
-                @Override
-                public void onVideoComplete(String id) { // 播放完成
-                    Log.d(TAG, "VideoModule onVideoComplete");
-                    sendStatus("onVideoComplete", id);
-                }
+                        @Override
+                        public void onVideoResume(String id) { // 播放恢复
+                            Log.d(TAG, "VideoModule onVideoResume");
+                            sendStatus("onVideoResume", id);
+                        }
 
-                @Override
-                public void onVideoError(String id) { // 播放出错
-                    Log.d(TAG, "VideoModule onVideoError");
-                    sendStatus("onVideoError", id);
-                }
-            });
+                        @Override
+                        public void onVideoComplete(String id) { // 播放完成
+                            Log.d(TAG, "VideoModule onVideoComplete");
+                            sendStatus("onVideoComplete", id);
+                        }
 
-            mDrawVideoFragment.setOnLikeClickListener(new VideoSdk.OnLikeClickListener() {
-                @Override
-                public void onLikeClick(String id, boolean like) { // 点赞或取消点赞
-                    Log.d(TAG, "VideoModule onLikeClick");
-                    WritableMap params = Arguments.createMap();
-                    params.putString("type", "onLikeClick");
-                    params.putString("id", id);
-                    params.putString("like", String.valueOf(like));
-                    sendEvent(params);
+                        @Override
+                        public void onVideoError(String id) { // 播放出错
+                            Log.d(TAG, "VideoModule onVideoError");
+                            sendStatus("onVideoError", id);
+                        }
+                    });
+
+                    mDrawVideoFragment.setOnLikeClickListener(new VideoSdk.OnLikeClickListener() {
+                        @Override
+                        public void onLikeClick(String id, boolean like) { // 点赞或取消点赞
+                            Log.d(TAG, "VideoModule onLikeClick");
+                            WritableMap params = Arguments.createMap();
+                            params.putString("type", "onLikeClick");
+                            params.putString("id", id);
+                            params.putString("like", String.valueOf(like));
+                            sendEvent(params);
+                        }
+                    });
                 }
             });
         } else {
