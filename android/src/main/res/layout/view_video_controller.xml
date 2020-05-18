@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:imagecontrol="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:background="@android:color/black">
 
@@ -50,12 +51,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp">
 
-                <ImageView
+                <com.linkin.videosdk.widget.RoundImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:tag="iv_avatar" />
+                    android:layout_marginRight="15dp"
+                    android:tag="iv_avatar"
+                    imagecontrol:border_outside_color="#FFA1A1A1"
+                    imagecontrol:border_thickness="1dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -98,7 +101,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:background="@drawable/bv_like_selector"
+                    android:background="@drawable/like_selector"
                     android:tag="iv_like" />
 
                 <TextView
@@ -127,7 +130,7 @@
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:background="@mipmap/bv_share" />
+                    android:background="@drawable/share_selector" />
 
                 <TextView
                     android:layout_width="wrap_content"

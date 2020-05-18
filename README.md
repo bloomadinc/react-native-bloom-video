@@ -14,11 +14,29 @@ AppId：应用程序 id，以 ba 开头的 18 位 hex 字符串，如 ba0063bfbc
 
 ## SDK 集成
 
+### 1、添加 NPM
+
 `$ npm install react-native-bloom-video --save`
 
 或
 
 `$ yarn add react-native-bloom-video --save`
+
+### 2、添加 Maven 仓库地址
+
+```
+allprojects {
+    repositories {
+        maven {
+            credentials {
+                username 'iqLuKm'
+                password 'pomH01oYcR'
+            }
+            url 'https://repo.rdc.aliyun.com/repository/117933-release-sPkE7F/'
+        }
+    }
+}
+```
 
 ## SDK 使用
 
@@ -48,12 +66,13 @@ import { VideoStreaming } from "react-native-bloom-video";
 
 params 参数说明：
 
-| 参数    | 说明           | 类型   | 说明               |
-| ------- | -------------- | ------ | ------------------ |
-| type    | 广告状态       | string | -                  |
-| id      | 广告 Id        | int    | -                  |
-| code    | 返回的错误代码 | int    | type 为 onError 时 |
-| message | 返回的错误消息 | string | type 为 onError 时 |
+| 参数      | 说明           | 类型   | 说明               |
+| --------- | -------------- | ------ | ------------------ |
+| type      | 广告状态       | string | -                  |
+| id        | 视频 Id        | string | -                  |
+| videoType | 视频类型       | string | 1:视频，2:广告     |
+| code      | 返回的错误代码 | int    | type 为 onError 时 |
+| message   | 返回的错误消息 | string | type 为 onError 时 |
 
 params.type 说明：
 
