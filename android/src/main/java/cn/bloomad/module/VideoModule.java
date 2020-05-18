@@ -20,7 +20,10 @@ import com.linkin.videosdk.VideoSdk;
 
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import cn.bloomad.BuildConfig;
+import cn.bloomad.widget.VideoControllerView;
 
 public class VideoModule extends EventModule {
     private final int NEWS_FRAGMENT_ID = 88888;
@@ -31,6 +34,15 @@ public class VideoModule extends EventModule {
     public VideoModule(final ReactApplicationContext reactContext, final Activity activity, String name) {
         super(reactContext, activity, name);
         initModule = InitModule.getInstance();
+    }
+
+    public void sendStatus(String type, @Nullable String id, @Nullable int videoType) {
+        WritableMap params = Arguments.createMap();
+        params.putString("type", type);
+        params.putString("id", id);
+        params.putString("videoType", String.valueOf(videoType));
+        Log.d(TAG, eventName + ":" + type);
+        sendEvent(params);
     }
 
     @SuppressLint("ResourceType")
@@ -62,47 +74,85 @@ public class VideoModule extends EventModule {
                     fm.beginTransaction().add(NEWS_FRAGMENT_ID, finalFragment).commitAllowingStateLoss();
 
                     mDrawVideoFragment = (DrawVideoFragment) finalFragment;
+
+                     mDrawVideoFragment.setControllerViewClass(VideoControllerView.class);
+
                     mDrawVideoFragment.setVideoListener(new VideoSdk.VideoListener() {
                         @Override
-                        public void onVideoStart(String id) { // 播放开始
+                        public void onVideoStart(String id, int videoType) { // 播放开始
                             Log.d(TAG, "VideoModule onVideoStart");
-                            sendStatus("onVideoStart", id);
+                            sendStatus("onVideoStart", id, videoType);
                         }
 
                         @Override
-                        public void onVideoPause(String id) { // 播放暂停
+                        public void onVideoPause(String id, int videoType) { // 播放暂停
                             Log.d(TAG, "VideoModule onVideoPause");
-                            sendStatus("onVideoPause", id);
+                            sendStatus("onVideoPause", id, videoType);
                         }
 
                         @Override
-                        public void onVideoResume(String id) { // 播放恢复
+                        public void onVideoResume(String id, int videoType) { // 播放恢复
                             Log.d(TAG, "VideoModule onVideoResume");
-                            sendStatus("onVideoResume", id);
+                            sendStatus("onVideoResume", id, videoType);
                         }
 
                         @Override
-                        public void onVideoComplete(String id) { // 播放完成
+                        public void onVideoComplete(String id, int videoType) { // 播放完成
                             Log.d(TAG, "VideoModule onVideoComplete");
-                            sendStatus("onVideoComplete", id);
+                            sendStatus("onVideoComplete", id, videoType);
                         }
 
                         @Override
-                        public void onVideoError(String id) { // 播放出错
+                        public void onVideoError(String id, int videoType) { // 播放出错
                             Log.d(TAG, "VideoModule onVideoError");
-                            sendStatus("onVideoError", id);
+                            sendStatus("onVideoError", id, videoType);
                         }
                     });
 
+                    // 视频点赞监听，返回是否阻止事件继续传播
                     mDrawVideoFragment.setOnLikeClickListener(new VideoSdk.OnLikeClickListener() {
                         @Override
-                        public void onLikeClick(String id, boolean like) { // 点赞或取消点赞
+                        public boolean onLikeClick(String id, int videoType, boolean like) {
                             Log.d(TAG, "VideoModule onLikeClick");
                             WritableMap params = Arguments.createMap();
                             params.putString("type", "onLikeClick");
                             params.putString("id", id);
+                            params.putString("videoType", String.valueOf(videoType));
                             params.putString("like", String.valueOf(like));
                             sendEvent(params);
+                            return like;
+                        }
+                    });
+
+                    // 视频分享监听，返回是否阻止事件继续传播
+                    mDrawVideoFragment.setOnShareClickListener(new VideoSdk.OnShareClickListener() {
+                        @Override
+                        public boolean onShareClick(String id, int videoType, String videoUrl, String author, String title) {
+                            Log.d(TAG, "VideoModule onShareClick");
+                            WritableMap params = Arguments.createMap();
+                            params.putString("type", "onShareClick");
+                            params.putString("id", id);
+                            params.putString("videoType", String.valueOf(videoType));
+                            params.putString("videoUrl", videoUrl);
+                            params.putString("author", author);
+                            params.putString("title", title);
+                            sendEvent(params);
+                            return false;
+                        }
+                    });
+
+                    // 视频播放进度监听
+                    mDrawVideoFragment.setProgressListener(new VideoSdk.ProgressListener() {
+                        @Override
+                        public void onProgressUpdate(String id, int videoType, int position, int duration) {
+//                            Log.d(TAG, "VideoModule onProgressUpdate");
+//                            WritableMap params = Arguments.createMap();
+//                            params.putString("type", "onProgressUpdate");
+//                            params.putString("id", id);
+//                            params.putString("videoType", String.valueOf(videoType));
+//                            params.putString("position", String.valueOf(position));
+//                            params.putString("duration", String.valueOf(duration));
+//                            sendEvent(params);
                         }
                     });
                 }

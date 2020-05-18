@@ -82,8 +82,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
 
-    implementation files('libs/adsdk-1.3.3.aar')
-    implementation files('libs/videosdk-1.0.5.aar')
+    implementation 'com.github.SheHuan:NiceImageView:1.0.5'
+
+    implementation 'com.linkin.sdk:adsdk:1.3.6'
+    implementation 'com.linkin.sdk:videosdk:1.0.9'
 }
 
 def configureReactNativePom(def pom) {
