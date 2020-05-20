@@ -37,7 +37,11 @@ function withComponent(WrappedComponent, selectData = {}) {
 
     componentWillUnmount = () => {};
     render() {
-      console.log("state", this.state, this.props);
+      // console.log("state", this.state, this.props);
+      let play = true;
+      if (this.props.hasOwnProperty("play")) {
+        play = this.props.play;
+      }
       return (
         <View
           style={{
@@ -50,7 +54,12 @@ function withComponent(WrappedComponent, selectData = {}) {
               width: this.state.width,
               height: this.state.height,
             }}
-            size={this.state}
+            play={play}
+            size={{
+              play: play,
+              unique: this.state.unique,
+              appId: this.state.appId,
+            }}
             onChange={this.onChange}
           />
         </View>

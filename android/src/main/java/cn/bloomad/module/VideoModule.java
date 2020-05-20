@@ -14,15 +14,14 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.linkin.adsdk.AdSdk;
 import com.linkin.videosdk.DrawVideoFragment;
-import com.linkin.videosdk.VideoConfig;
 import com.linkin.videosdk.VideoSdk;
 
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import cn.bloomad.BuildConfig;
 import cn.bloomad.widget.VideoControllerView;
 
 public class VideoModule extends EventModule {
@@ -48,13 +47,13 @@ public class VideoModule extends EventModule {
     @SuppressLint("ResourceType")
     @Override
     public void threadAction(Activity mActivity, Map params) {
-        Log.d(TAG, "VideoModule threadAction");
         final ViewGroup viewGroup = (ViewGroup) params.get("viewGroup");
         final String appId = (String) params.get("appId");
+        final Boolean play = (Boolean) params.get("play");
         AppCompatActivity activity = (AppCompatActivity) mActivity;
         final FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(NEWS_FRAGMENT_ID);
-        Log.d(TAG, "VideoModule threadAction:" + (null == fragment) + ":" + String.valueOf(viewGroup.getId()));
+        Log.d(TAG, "VideoModule threadAction:" + (null == fragment) + ":" + String.valueOf(viewGroup.getId()) + ",play:" + String.valueOf(play));
         if (null == fragment) {
 
             initModule.init(mActivity, appId);
@@ -65,19 +64,23 @@ public class VideoModule extends EventModule {
             newsContainer.setId(NEWS_FRAGMENT_ID);
 
             viewGroup.addView(newsContainer, layoutParams);
-            fragment = DrawVideoFragment.newInstance();
 
-            final Fragment finalFragment = fragment;
             viewGroup.post(new Runnable() {
                 @Override
                 public void run() {
-                    fm.beginTransaction().add(NEWS_FRAGMENT_ID, finalFragment).commitAllowingStateLoss();
+                    mDrawVideoFragment = DrawVideoFragment.newInstance();
 
-                    mDrawVideoFragment = (DrawVideoFragment) finalFragment;
+                    fm.beginTransaction().add(NEWS_FRAGMENT_ID, mDrawVideoFragment).commitAllowingStateLoss();
 
-                     mDrawVideoFragment.setControllerViewClass(VideoControllerView.class);
+                    mDrawVideoFragment.setControllerViewClass(VideoControllerView.class);
 
                     mDrawVideoFragment.setVideoListener(new VideoSdk.VideoListener() {
+                        @Override
+                        public void onVideoShow(String id, int videoType) { // 视频切换展示
+                            Log.d(TAG, "VideoModule onVideoShow");
+                            sendStatus("onVideoShow", id, videoType);
+                        }
+
                         @Override
                         public void onVideoStart(String id, int videoType) { // 播放开始
                             Log.d(TAG, "VideoModule onVideoStart");
@@ -120,7 +123,7 @@ public class VideoModule extends EventModule {
                             params.putString("videoType", String.valueOf(videoType));
                             params.putString("like", String.valueOf(like));
                             sendEvent(params);
-                            return like;
+                            return false;
                         }
                     });
 
@@ -145,20 +148,29 @@ public class VideoModule extends EventModule {
                     mDrawVideoFragment.setProgressListener(new VideoSdk.ProgressListener() {
                         @Override
                         public void onProgressUpdate(String id, int videoType, int position, int duration) {
-//                            Log.d(TAG, "VideoModule onProgressUpdate");
-//                            WritableMap params = Arguments.createMap();
-//                            params.putString("type", "onProgressUpdate");
-//                            params.putString("id", id);
-//                            params.putString("videoType", String.valueOf(videoType));
-//                            params.putString("position", String.valueOf(position));
-//                            params.putString("duration", String.valueOf(duration));
-//                            sendEvent(params);
+                            Log.d(TAG, "VideoModule onProgressUpdate");
+                            WritableMap params = Arguments.createMap();
+                            params.putString("type", "onProgressUpdate");
+                            params.putString("id", id);
+                            params.putString("videoType", String.valueOf(videoType));
+                            params.putString("position", String.valueOf(position));
+                            params.putString("duration", String.valueOf(duration));
+                            sendEvent(params);
                         }
                     });
+
+                    mDrawVideoFragment.onHiddenChanged(!play);
                 }
             });
         } else {
+//            final Fragment finalFragment1 = fragment;
+//            viewGroup.post(new Runnable() {
+//               @Override
+//               public void run() {
             fm.beginTransaction().show(fragment).commitAllowingStateLoss();
+//               }
+//           });
+            mDrawVideoFragment.onHiddenChanged(!play);
         }
     }
 
@@ -166,5 +178,22 @@ public class VideoModule extends EventModule {
     public void sendEvent(WritableMap event) {
         mReactContext.getJSModule(RCTEventEmitter.class).receiveEvent(Integer.parseInt(eventName), "onNativeChange",
                 event);
+    }
+
+    public void playVideo(final boolean isPlay){
+        Log.d(TAG, "playVideo");
+        if (mActivity != null) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(mDrawVideoFragment != null){
+                        mDrawVideoFragment.onHiddenChanged(!isPlay);
+                    }
+                }
+            });
+        } else {
+            Log.d(TAG, "noActivity");
+            sendStatus("noActivity", null);
+        }
     }
 }
