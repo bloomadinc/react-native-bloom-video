@@ -56,6 +56,7 @@ import { VideoStreaming } from "react-native-bloom-video";
     height: height,
     backgroundColor: "blue",
   }}
+  play={true}
   onChange={(params) => {
     console.log("params", params);
   }}
@@ -78,6 +79,7 @@ params.type 说明：
 
 | type            | 说明           |
 | --------------- | -------------- |
+| onVideoShow     | 视频切换展示   |
 | onVideoStart    | 播放开始       |
 | onVideoPause    | 播放暂停       |
 | onVideoResume   | 播放恢复       |
