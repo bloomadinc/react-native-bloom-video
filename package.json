@@ -1,7 +1,7 @@
 {
   "name": "react-native-bloom-video",
   "title": "React Native Bloom Video",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Bloom Video 视频sdk react-native 版本",
   "main": "index.js",
   "scripts": {
