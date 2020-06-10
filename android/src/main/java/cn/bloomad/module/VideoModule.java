@@ -14,7 +14,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.linkin.adsdk.AdSdk;
 import com.linkin.videosdk.DrawVideoFragment;
 import com.linkin.videosdk.VideoSdk;
 

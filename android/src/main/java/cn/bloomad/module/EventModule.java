@@ -7,7 +7,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.linkin.adsdk.AdSdk;
 
 import java.util.Map;
 
@@ -49,7 +48,6 @@ public class EventModule {
     }
 
     public void action(final Map params) {
-        Log.d(TAG, AdSdk.class.getSimpleName());
         if (mActivity != null) {
             mActivity.runOnUiThread(new Runnable() {
                 @Override

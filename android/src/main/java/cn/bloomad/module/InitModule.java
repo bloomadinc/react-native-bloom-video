@@ -3,8 +3,6 @@ package cn.bloomad.module;
 import android.app.Activity;
 import android.util.Log;
 
-import com.linkin.adsdk.AdConfig;
-import com.linkin.adsdk.AdSdk;
 import com.linkin.videosdk.VideoConfig;
 import com.linkin.videosdk.VideoSdk;
 
@@ -34,9 +32,9 @@ public class InitModule {
 
     public void initAd(Activity mActivity, String appId){
         if(!isAdInit) {
-            AdSdk.getInstance().init(mActivity, new AdConfig.Builder().appId(appId)
-                    // .userId("uid") // 未登录可不设置 userId，登录时再设置
-                    .multiProcess(false).debug(BuildConfig.DEBUG).build(), null);
+//            AdSdk.getInstance().init(mActivity, new AdConfig.Builder().appId(appId)
+//                    // .userId("uid") // 未登录可不设置 userId，登录时再设置
+//                    .multiProcess(false).debug(BuildConfig.DEBUG).build(), null);
             isAdInit = true;
         }
     }
